@@ -130,7 +130,6 @@ local fakewalking = false
 local stored_onshot = false
 local stored_limit = 0
 local flicks = 0
-local adebug = false
 client.set_event_callback( "setup_command", function( cmd )	
 	if ui.get( variance ) > 0 or ui.get( slowmotion ) then
 		return
@@ -165,7 +164,6 @@ client.set_event_callback( "setup_command", function( cmd )
 	local flick_tick = get_flick_tick( )
 	if cmd.chokedcommands == ( ui.get( limit ) - flick_tick ) then
 		flicks = flicks + 1
-		adebug = true
 		if ui.get( fakewalk_mode ) == "Opposite" then
 			cmd.yaw = eye_angles.y + ( 60 * fake_side )
 		elseif ui.get( fakewalk_mode ) == "Extend" then
@@ -173,18 +171,10 @@ client.set_event_callback( "setup_command", function( cmd )
 		elseif ui.get( fakewalk_mode ) == "Jitter" then
 			cmd.yaw = eye_angles.y + ( 60 * ( flicks % 2 == 0 and -1 or 1 ) )
 		end
-	else
-		adebug = false
 	end
 end )
 
 
 client.set_event_callback( "paint", function( )
 	ui.set_visible( fakewalk_mode, not ui.get( slowmotion ) and true or false )
-	if adebug then
-		renderer.text( 85, 72, 255, 255, 255, 255, "b", 0, "flick" )
-	end
-	
-	local weapon = entity.get_player_weapon( entity.get_local_player( ) )
-	renderer.text( 85, 80, 255, 255, 255, 255, "b", 0, tostring( weapon ) )
 end )
