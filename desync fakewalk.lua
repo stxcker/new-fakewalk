@@ -81,45 +81,25 @@ local function quick_stop( cmd )
 	cmd.sidemove = new_move.y
 end
 
+local equiped_type = 0
+local equiped_name = ""
 local function get_flick_tick( )
 	local weapon = entity.get_player_weapon( entity.get_local_player( ) )
 	
-	-- Modify the flick time of heavier weapons
-	if weapon == 85
-		or weapon == 103
-		or weapon == 106
-		or weapon == 108
-		or weapon == 113
-		or weapon == 115
-		or weapon == 120
-		or weapon == 122
-		or weapon == 124 
-		or weapon == 131
-		or weapon == 144 
-		or weapon == 153 
-		or weapon == 157
-		or weapon == 159 
-		or weapon == 161 
-		or weapon == 163
-		or weapon == 165 
-		or weapon == 167 then
-		return 6
-	end
-	
-	-- Modify the flick time of the even heavier weapons
-	if weapon == 110 
-		or weapon == 127 
-		or weapon == 134
-		or weapon == 151 
-		or weapon == 169 
-		or weapon == 177 then
+	if equiped_name == "awp"
+		or equiped_name == "m249" then
 		return 7
 	end
 	
-	-- Modify the flick time of the heaviest weapons (wtf)
-	if weapon == 129 
-		or weapon == 171 then
+	if equiped_name == "negev" then
 		return 9
+	end
+	
+	if equiped_type == 5
+		or equiped_type == 4
+		or equiped_type == 3 
+		or equiped_name == "deagle" then
+		return 6
 	end
 	
 	return 5
@@ -174,6 +154,10 @@ client.set_event_callback( "setup_command", function( cmd )
 	end
 end )
 
+client.set_event_callback( "item_equip", function( event_data )
+	equiped_name = event_data.item
+	equiped_type = event_data.weptype
+end )
 
 client.set_event_callback( "paint", function( )
 	ui.set_visible( fakewalk_mode, not ui.get( slowmotion ) and true or false )
