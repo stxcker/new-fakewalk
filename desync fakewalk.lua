@@ -145,11 +145,11 @@ client.set_event_callback( "setup_command", function( cmd )
 	if cmd.chokedcommands == ( ui.get( limit ) - flick_tick ) then
 		flicks = flicks + 1
 		if ui.get( fakewalk_mode ) == "Opposite" then
-			cmd.yaw = eye_angles.y + ( 60 * fake_side )
+			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 60 * fake_side ) )
 		elseif ui.get( fakewalk_mode ) == "Extend" then
-			cmd.yaw = eye_angles.y + ( 90 * fake_side )
+			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 90 * fake_side ) )
 		elseif ui.get( fakewalk_mode ) == "Jitter" then
-			cmd.yaw = eye_angles.y + ( 60 * ( flicks % 2 == 0 and -1 or 1 ) )
+			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 60 * ( flicks % 2 == 0 and -1 or 1 ) ) )
 		end
 	end
 end )
