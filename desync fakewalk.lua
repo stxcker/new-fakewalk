@@ -85,7 +85,16 @@ local equiped_type = 0
 local equiped_name = ""
 local function get_flick_tick( )
 	local weapon = entity.get_player_weapon( entity.get_local_player( ) )
-	
+	local scoped = entity.get_prop( entity.get_local_player( ), "m_bIsScoped" )
+
+	if ( equiped_name == "scar20" 
+		or equiped_name == "g3sg1"
+		or equiped_name == "sg556"
+		or equiped_name == "aug" )
+		and scoped == 1 then
+		return 10	
+	end
+
 	if equiped_name == "awp"
 		or equiped_name == "m249" then
 		return 7
