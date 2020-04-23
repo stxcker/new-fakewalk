@@ -168,6 +168,6 @@ client.set_event_callback( "item_equip", function( event_data )
 	equiped_type = event_data.weptype
 end )
 
-client.set_event_callback( "paint", function( )
+client.set_event_callback( "pre_render", function( )
 	ui.set_visible( fakewalk_mode, not ui.get( slowmotion ) and true or false )
 end )
