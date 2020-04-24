@@ -125,7 +125,7 @@ client.set_event_callback( "setup_command", function( cmd )
 	end	
 	
 	if not ui.get( slowmotion_state ) then
-		if fakewalking then
+		if fakewalking and stored_limit then
 			ui.set( onshot, stored_onshot )
 			ui.set( limit, stored_limit )
 		end
