@@ -83,35 +83,22 @@ end
 
 local equiped_type = 0
 local equiped_name = ""
-local function get_flick_tick( )
+local function get_stop_tick( )
 	local weapon = entity.get_player_weapon( entity.get_local_player( ) )
 	local scoped = entity.get_prop( entity.get_local_player( ), "m_bIsScoped" )
 
-	if ( equiped_name == "scar20" 
-		or equiped_name == "g3sg1"
-		or equiped_name == "sg556"
-		or equiped_name == "aug" )
-		and scoped == 1 then
-		return 10	
+	-- Because Valve
+	if ( equiped_name == "aug" and scoped == 1 ) then
+		return 10
 	end
 
-	if equiped_name == "awp"
-		or equiped_name == "m249" then
-		return 7
-	end
-	
-	if equiped_name == "negev" then
+	if equiped_name == "deagle"
+		or equiped_name == "negev"
+		or ( equiped_name == "sg556" and scoped == 1 ) then
 		return 9
 	end
 	
-	if equiped_type == 5
-		or equiped_type == 4
-		or equiped_type == 3 
-		or equiped_name == "deagle" then
-		return 6
-	end
-	
-	return 5
+	return 8
 end
 
 -- [x]======================================[ Callbacks ]======================================[x]
@@ -119,6 +106,7 @@ local fakewalking = false
 local stored_onshot = false
 local stored_limit = 0
 local flicks = 0
+local yomomma = false
 client.set_event_callback( "setup_command", function( cmd )	
 	if ui.get( variance ) > 0 or ui.get( slowmotion ) then
 		return
@@ -140,18 +128,27 @@ client.set_event_callback( "setup_command", function( cmd )
 	local real_angles = vec_3( entity.get_prop( entity.get_local_player( ), "m_angAbsRotation" ) )
 	local fake_side = ( normalize_as_yaw( real_angles.y - eye_angles.y ) > 0 ) and -1 or 1
 	
+	-- Get velocity
+	local velocity_prop = vec_3( entity.get_prop( entity.get_local_player( ), "m_vecVelocity" ) )
+	local velocity = math.sqrt( velocity_prop.x * velocity_prop.x + velocity_prop.y * velocity_prop.y )
+	
+	-- Set some shit up
 	cmd.allow_send_packet = false
 	fakewalking = true
 	ui.set( onshot, false )
 	ui.set( limit, 14 )
-	if cmd.chokedcommands >= ( ui.get( limit ) - 11 ) then 
+	
+	local stop_tick = get_stop_tick( )
+	if cmd.chokedcommands >= ( ui.get( limit ) - stop_tick ) then 
 		if cmd.forwardmove ~= 0 or cmd.sidemove ~= 0 then
 			quick_stop( cmd )
 		end
 	end
 
-	local flick_tick = get_flick_tick( )
-	if cmd.chokedcommands == ( ui.get( limit ) - flick_tick ) then
+	if cmd.chokedcommands == ( ui.get( limit ) - 3 ) then
+		if velocity <= 0 then
+			cmd.forwardmove = -1.01
+		end
 		flicks = flicks + 1
 		if ui.get( fakewalk_mode ) == "Opposite" then
 			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 60 * fake_side ) )
@@ -160,6 +157,15 @@ client.set_event_callback( "setup_command", function( cmd )
 		elseif ui.get( fakewalk_mode ) == "Jitter" then
 			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 60 * ( flicks % 2 == 0 and -1 or 1 ) ) )
 		end
+		yomomma = true
+	else
+		yomomma = false
+	end
+end )
+
+client.set_event_callback( "paint", function( )
+	if yomomma then
+		renderer.text( 105, 72, 255, 255, 255, 255, "b", 0, equiped_name )
 	end
 end )
 
