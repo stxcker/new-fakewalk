@@ -106,7 +106,6 @@ local fakewalking = false
 local stored_onshot = false
 local stored_limit = 0
 local flicks = 0
-local yomomma = false
 client.set_event_callback( "setup_command", function( cmd )	
 	if ui.get( variance ) > 0 or ui.get( slowmotion ) then
 		return
@@ -157,15 +156,6 @@ client.set_event_callback( "setup_command", function( cmd )
 		elseif ui.get( fakewalk_mode ) == "Jitter" then
 			cmd.yaw = normalize_as_yaw( eye_angles.y + ( 60 * ( flicks % 2 == 0 and -1 or 1 ) ) )
 		end
-		yomomma = true
-	else
-		yomomma = false
-	end
-end )
-
-client.set_event_callback( "paint", function( )
-	if yomomma then
-		renderer.text( 105, 72, 255, 255, 255, 255, "b", 0, equiped_name )
 	end
 end )
 
