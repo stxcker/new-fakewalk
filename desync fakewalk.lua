@@ -4,7 +4,7 @@ local variance = ui.reference( "AA", "Fake lag", "Variance" )
 local slowmotion, slowmotion_state = ui.reference( "AA", "Other", "Slow motion" )
 local fake_limit = ui.reference( "AA", "Anti-aimbot angles", "Fake yaw limit" )
 local onshot = ui.reference( "AA", "Other", "On shot anti-aim" )
-local fast_stop = ui.reference( "Misc", "Movement", "Fast walk" )
+local fast_walk = ui.reference( "Misc", "Movement", "Fast walk" )
 
 -- [x]================================================[ UI Additions ]================================================[x]
 local fakewalk_mode = ui.new_combobox( "AA", "Anti-aimbot angles", "Fakewalk mode", { "Opposite", "Extend", "Jitter" } )
@@ -107,10 +107,10 @@ local fakewalking = false
 local stored_onshot = ui.get( onshot )
 local stored_limit = ui.get( limit )
 local stored_variance = ui.get( variance )
-local stored_faststop = ui.get( fast_stop )
+local stored_fastwalk = ui.get( fast_walk )
 local flicks = 0
 client.set_event_callback( "setup_command", function( cmd )	
-	if ui.get( variance ) > 0 or ui.get( slowmotion ) then
+	if ui.get( slowmotion ) then
 		return
 	end	
 	
@@ -119,12 +119,12 @@ client.set_event_callback( "setup_command", function( cmd )
 			ui.set( onshot, stored_onshot )
 			ui.set( limit, stored_limit )
 			ui.set( variance, stored_variance )
-			ui.set( fast_stop, stored_faststop )
+			ui.set( fast_walk, stored_fastwalk )
 		end
 		stored_onshot = ui.get( onshot )
 		stored_limit = ui.get( limit )
 		stored_variance = ui.get( variance )
-		stored_faststop = ui.get( fast_stop )
+		stored_fastwalk = ui.get( fast_walk )
 		fakewalking = false
 		return
 	end
@@ -143,7 +143,7 @@ client.set_event_callback( "setup_command", function( cmd )
 	ui.set( onshot, false )
 	ui.set( limit, 14 )
 	ui.set( variance, 0 )
-	ui.set( fast_stop, true )
+	ui.set( fast_walk, true )
 
 	local stop_tick = get_stop_tick( )
 	if cmd.chokedcommands >= ( ui.get( limit ) - stop_tick ) then 
