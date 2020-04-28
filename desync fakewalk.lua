@@ -4,6 +4,7 @@ local variance = ui.reference( "AA", "Fake lag", "Variance" )
 local slowmotion, slowmotion_state = ui.reference( "AA", "Other", "Slow motion" )
 local fake_limit = ui.reference( "AA", "Anti-aimbot angles", "Fake yaw limit" )
 local onshot = ui.reference( "AA", "Other", "On shot anti-aim" )
+local fast_stop = ui.reference( "Misc", "Movement", "Fast stop" )
 
 -- [x]================================================[ UI Additions ]================================================[x]
 local fakewalk_mode = ui.new_combobox( "AA", "Anti-aimbot angles", "Fakewalk mode", { "Opposite", "Extend", "Jitter" } )
@@ -88,12 +89,12 @@ local function get_stop_tick( )
 	local scoped = entity.get_prop( entity.get_local_player( ), "m_bIsScoped" )
 
 	-- Because Valve
-	if ( equiped_name == "aug" and scoped == 1 ) then
+	if equiped_name == "deagle"
+		or ( equiped_name == "aug" and scoped == 1 ) then
 		return 10
 	end
 
-	if equiped_name == "deagle"
-		or equiped_name == "negev"
+	if equiped_name == "negev"
 		or ( equiped_name == "sg556" and scoped == 1 ) then
 		return 9
 	end
@@ -103,8 +104,10 @@ end
 
 -- [x]======================================[ Callbacks ]======================================[x]
 local fakewalking = false
-local stored_onshot = false
-local stored_limit = 0
+local stored_onshot = ui.get( onshot )
+local stored_limit = ui.get( limit )
+local stored_variance = ui.get( variance )
+local stored_faststop = ui.get( fast_stop )
 local flicks = 0
 client.set_event_callback( "setup_command", function( cmd )	
 	if ui.get( variance ) > 0 or ui.get( slowmotion ) then
@@ -112,12 +115,16 @@ client.set_event_callback( "setup_command", function( cmd )
 	end	
 	
 	if not ui.get( slowmotion_state ) then
-		if fakewalking and stored_limit then
+		if fakewalking and stored_limit > 0 then
 			ui.set( onshot, stored_onshot )
 			ui.set( limit, stored_limit )
+			ui.set( variance, stored_variance )
+			ui.set( fast_stop, stored_faststop )
 		end
 		stored_onshot = ui.get( onshot )
 		stored_limit = ui.get( limit )
+		stored_variance = ui.get( variance )
+		stored_faststop = ui.get( fast_stop )
 		fakewalking = false
 		return
 	end
@@ -132,11 +139,12 @@ client.set_event_callback( "setup_command", function( cmd )
 	local velocity = math.sqrt( velocity_prop.x * velocity_prop.x + velocity_prop.y * velocity_prop.y )
 	
 	-- Set some shit up
-	cmd.allow_send_packet = false
 	fakewalking = true
 	ui.set( onshot, false )
 	ui.set( limit, 14 )
-	
+	ui.set( variance, 0 )
+	ui.set( fast_stop, true )
+
 	local stop_tick = get_stop_tick( )
 	if cmd.chokedcommands >= ( ui.get( limit ) - stop_tick ) then 
 		if cmd.forwardmove ~= 0 or cmd.sidemove ~= 0 then
