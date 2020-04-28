@@ -4,7 +4,7 @@ local variance = ui.reference( "AA", "Fake lag", "Variance" )
 local slowmotion, slowmotion_state = ui.reference( "AA", "Other", "Slow motion" )
 local fake_limit = ui.reference( "AA", "Anti-aimbot angles", "Fake yaw limit" )
 local onshot = ui.reference( "AA", "Other", "On shot anti-aim" )
-local fast_stop = ui.reference( "Misc", "Movement", "Fast stop" )
+local fast_stop = ui.reference( "Misc", "Movement", "Fast walk" )
 
 -- [x]================================================[ UI Additions ]================================================[x]
 local fakewalk_mode = ui.new_combobox( "AA", "Anti-aimbot angles", "Fakewalk mode", { "Opposite", "Extend", "Jitter" } )
